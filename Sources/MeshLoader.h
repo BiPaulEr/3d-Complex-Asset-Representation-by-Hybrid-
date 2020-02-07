@@ -35,7 +35,13 @@ void writeDecimationAndVoxel(const std::string & filename, std::shared_ptr<Mesh>
 //Load attributes vertexDecimationPositionsLoad/ triangleDecimationIndicesLoad/vertexVoxelPositionsLoad/triangleVoxelIndicesLoad from files to Mesh input
 void loadDecimationAndVoxel(const std::string & filename, std::shared_ptr<Mesh> meshPtr);
 
-void WriteAllDataToFiles(std::string Name, std::shared_ptr<Mesh> meshPtr);
+//Write all attribute needed for interpolation/decmation/voxellisation in the files 
+void WriteAllDataToFiles(std::string Name, std::shared_ptr<Mesh> meshPtr, float taille_radius);
+//Load all attribute needed for interpolation/decmation/voxellisation from the files 
+void LoadAllDataFromFiles(std::string Name, std::shared_ptr<Mesh> & meshPtr);
+//Show to the console all the attributes load to check
+void ShowAllDataLoaded(std::shared_ptr<Mesh> MeshPtr);
 }
+
 
 #endif // MESH_LOADER_H

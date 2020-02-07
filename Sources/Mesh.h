@@ -82,7 +82,7 @@ public:
 	// Compute the parameters of a sphere which bounds the mesh
 	void computeBoundingSphere (glm::vec3 & center, float & radius) const;
 	// Enable to have the principle caratéristic of the mesh : center, radius... fill in the pair and some explicit display in the console
-	pair<glm::vec3, float> analyseBasicGeoStat();
+	pair<glm::vec3, float> analyseBasicGeoStat(float  &taille_radius);
 	//Name of function is enough explicit
 	void recomputePerVertexNormals(bool angleBased = false);
 	//Prepare all the buffer for the GPU, the bool enables the use of the new position of vertex after the decimation : we need to send two vertex positions object

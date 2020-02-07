@@ -217,15 +217,13 @@ namespace MeshDecimation
 		size_t nE = m_edges.size();
 		size_t tracker = nE / 100;
 		std::cout << "\n" << "[" << std::flush;
-		time_t timer;
-		time_t timer1;
-		time(&timer);
+		
 		
 		for (size_t e = 0; e < nE; ++e)
 		{if ((e%tracker) == 0) {
-			time(&timer1);
-			std::cout << "-" <<floor(timer1-timer)<< std::flush;
-			time(&timer);
+			
+			std::cout << "-" <<std::flush;
+			
 		}
 			
 
@@ -623,6 +621,7 @@ namespace MeshDecimation
 		v2 = m_edges[currentEdge.m_name].m_v2;
 
 		qem = currentEdge.m_qem;
+		//ADD condition
 		if (IsDistanceBelowFLoatRadius(m_points[v1], m_points[v2])) {
 			EdgeCollapse(v1, v2);
 			m_points[v1] = m_edges[currentEdge.m_name].m_pos;
@@ -691,7 +690,7 @@ namespace MeshDecimation
 		{
 			if ((tracker*20-nvr*tracker) <m_pqueue.size()) {
 				nvr++;
-				std::cout << '-'<<nvr << std::flush;
+				std::cout << '-' << std::flush;
 			}
 			
 			
@@ -753,15 +752,7 @@ namespace MeshDecimation
 		}
 
 		trianglesIndices.clear();
-		for (size_t i = 0; i < nTrianglesDecimatedMesh; i++)
-		{
-			if ((decimatedMeshTriangles[i][0] >= 0) && (decimatedMeshTriangles[i][1] >= 0) && (decimatedMeshTriangles[i][2] >= 0)) {
-				trianglesIndices.push_back(glm::vec3(decimatedMeshTriangles[i][0], decimatedMeshTriangles[i][1], decimatedMeshTriangles[i][2]));
-			}
-			if ((decimatedMeshTriangles[i][0] >= 30000) || (decimatedMeshTriangles[i][1] >= 30000) || (decimatedMeshTriangles[i][2] >= 30000)) {
-				std::cout << "decimate error" << std::endl;
-			}
-		}
+	
 		std::cout << "---------->Transfer Data Loaded" << std::endl;
 		std::cout << "Free data Loading" << std::flush;
 		myMDecimator.~MeshDecimator();

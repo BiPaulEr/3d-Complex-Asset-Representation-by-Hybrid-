@@ -360,7 +360,7 @@ void MeshLoader::loadDecimationAndVoxel(const std::string & filename, std::share
 	std::cout << " > Decimation and Voxel <" << filename << "> loaded" << std::endl;
 }
 
-void MeshLoader::WriteAllDataToFiles(std::string Name, std::shared_ptr<Mesh> meshPtr) {
+void MeshLoader::WriteAllDataToFiles(std::string Name, std::shared_ptr<Mesh> meshPtr,float taille_radius) {
 	try {
 		MeshLoader::writeEdges(Name + "_edges.off", meshPtr);
 	}
@@ -380,10 +380,61 @@ void MeshLoader::WriteAllDataToFiles(std::string Name, std::shared_ptr<Mesh> mes
 		//	exitOnCriticalError(std::string("[Error loading edges]") + e.what());
 	}
 	try {
-		MeshLoader::writeScaleDataInterpolation(Name + "_DataInterpolation.off", meshPtr);
+		MeshLoader::writeScaleDataInterpolation(Name + "_DataInterpolation.off", meshPtr,taille_radius);
 	}
 	catch (std::exception & e) {
 		//exitOnCriticalError(std::string("[Error loading edges]") + e.what());
 	}
 
+}
+
+void MeshLoader::LoadAllDataFromFiles(std::string Name, std::shared_ptr<Mesh> & meshPtr) {
+	meshPtr->clear();
+	meshPtr = std::make_shared<Mesh>();
+	try {
+		MeshLoader::loadOFF("Resources/mesh_collection/" + Name + ".off", meshPtr);
+	}
+	catch (std::exception & e) {
+		//exitOnCriticalError(std::string("[Error loading mesh]") + e.what());
+	}
+	try {
+		MeshLoader::loadEdges(Name + "_edges.off", meshPtr);
+	}
+	catch (std::exception & e) {
+		//exitOnCriticalError(std::string("[Error loading edges]") + e.what());
+	}
+	try {
+		MeshLoader::loadPotentielAndRealMacrosurface(Name + "_PotentielAndRealSurfaces.off", meshPtr);
+	}
+	catch (std::exception & e) {
+		//exitOnCriticalError(std::string("[Error loading edges]") + e.what());
+	}
+	try {
+		MeshLoader::loadDecimationAndVoxel(Name + "_DecimationAndVoxel.off", meshPtr);
+	}
+	catch (std::exception & e) {
+		//	exitOnCriticalError(std::string("[Error loading edges]") + e.what());
+	}
+	try {
+		MeshLoader::loadScaleDataInterpolation(Name + "_DataInterpolation.off", meshPtr);
+	}
+	catch (std::exception & e) {
+		//exitOnCriticalError(std::string("[Error loading edges]") + e.what());
+	}
+	meshPtr->m_vertexOriginPositions = meshPtr->m_vertexPositions;
+	meshPtr->m_triangleOriginIndices = meshPtr->m_triangleIndices;
+}
+
+void MeshLoader::ShowAllDataLoaded(std::shared_ptr<Mesh> meshPtr) {
+	std::cout << "Size m_tranferGroupe : "<<meshPtr->m_vertex_transferGroupe_load.size() << std::endl;
+	std::cout << "Size m_component_Triangle_Potentiel_MacroSurface_Load : " << meshPtr->m_component_Triangle_Potentiel_MacroSurface_Load.size() << std::endl;
+	std::cout << "Size m_component_Triangle_Real_MacroSurface_Load : " << meshPtr->m_component_Triangle_Real_MacroSurface_Load.size() << std::endl;
+	std::cout << "Size m_DataInterpolationVertexLoad: " << meshPtr->m_DataInterpolationVertexLoad.size() << std::endl;
+	std::cout << "Size  m_DataInterpolationTrianglesLoad : " << meshPtr->m_DataInterpolationTrianglesLoad.size() << std::endl;
+	std::cout << "Size m_vertexPositions_NEWLoad : " << meshPtr->m_vertexPositions_NEWLoad.size() << std::endl;
+	std::cout << "Size m_vertexDecimationPositionsLoad : " << meshPtr->m_vertexDecimationPositionsLoad.size() << std::endl;
+	std::cout << "Size m_triangleDecimationIndicesLoad : " << meshPtr->m_triangleDecimationIndicesLoad.size() << std::endl;
+	std::cout << "Size  m_vertexVoxelPositionsLoad : " << meshPtr->m_vertexDecimationPositionsLoad.size() << std::endl;
+	std::cout << "Size m_triangleVoxelIndicesLoad : " << meshPtr->m_triangleDecimationIndicesLoad.size() << std::endl;
+	
 }

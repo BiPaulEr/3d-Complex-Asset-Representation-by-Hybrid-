@@ -21,6 +21,9 @@ using namespace std;
 Mesh::~Mesh () {
 	clear ();
 }
+
+//  List of functions needed to simple analysis and render and to init buffer 
+
 void Mesh::computeBoundingSphere (glm::vec3 & center, float & radius) const {
 	center = glm::vec3 (0.0);
 	radius = 0.f;
@@ -253,7 +256,7 @@ void Mesh::computePlanarParameterization() {
 	}
 
 }
-pair<glm::vec3, float> Mesh::analyseBasicGeoStat() {
+pair<glm::vec3, float> Mesh::analyseBasicGeoStat(float & taille_radius) {
 	float Min_dist = 1000.f;
 	float Max_dist = 0.f;
 	float sum_Dist = 0.f;
@@ -306,7 +309,7 @@ pair<glm::vec3, float> Mesh::analyseBasicGeoStat() {
 }
 
 
-
+// Compute half edges 
 void Mesh::computeTriangleAdjEdges() {
 	int i1, i2, i3;
 	int x1, x2, x3;
@@ -350,6 +353,7 @@ void Mesh::computeTriangleAdjEdges() {
 }
 
 
+//List of fonction needed to check for intersection between figures
 
 bool Mesh::intersectOrinsideSphere(glm::vec3 p1, glm::vec3 p2, glm::vec3 r, float R) {
 	float a = pow((p2[0] - p1[0]), 2.0f) + pow((p2[1] - p1[1]), 2.0f) + pow((p2[2] - p1[2]), 2.0f);
@@ -406,7 +410,7 @@ bool Mesh::triangleIntersectSphere(int absTriangle, glm::vec3 r, float R) {
 }
 
 
-
+//List of functions for the Macro Surface Analysis(included functions of exploration and related triangles count)
 
 bool Mesh::IsPotentialMacroSurfacesMacroSurfaces(std::vector<int> Triangles, float radius) {
 	glm::vec3 center = glm::vec3(0.f, 0.f, 0.f);
@@ -677,6 +681,7 @@ void Mesh::Explore2(int currentTri, queue<int> exploredTris, float radiusSphere,
 
 
 
+//List of functions needed during mesh analysis whcich is not directed related to a particular section
 
 bool Mesh::containsQueue(queue<int> Queue, int elements) {
 	while (!Queue.empty()) {
@@ -786,7 +791,8 @@ pair<int,std::vector<string>> Mesh::WichEdgesDecimeToRespectSizeScale(float tail
 	return result;
 }
 
-#pragma region newlist
+//List of functions that is used during the mesh analysis for the interpolation
+
 void Mesh::Real_To_Two_List_Triangle_Position_Indices_V2() {
 	
 	std::cout << "[Real to Two List Split Loading]" << std::endl;
@@ -1006,7 +1012,7 @@ void Mesh::Make_New_List_V2(float taille_radius, std::vector<int> TrianglesIndic
 
 	std::cout << "[New List Concatenated Loading]" << std::endl;
 	std::cout << "<                             >" << std::endl;
-	//std::cout << " OldList : " << "{[" << TemporaireStockage.first.first.size() << "/" << TemporaireStockage.second.first.size() << "],[" << TemporaireStockage.first.second.size() << "/" << TemporaireStockage.second.second.size() << "]}" << std::endl;
+	
 	New_Two_List_To_One_V2();
 	std::cout << " NewList : " << "{[" << m_DataStoreAfterVoxDec.first.first << "->" << m_DataStoreAfterVoxDec.first.second.size() << "],[" << m_DataStoreAfterVoxDec.second.first << "->" << m_DataStoreAfterVoxDec.second.second.size() << "]}" << std::endl;
 	std::cout << "<                             >" << std::endl;
@@ -1018,36 +1024,35 @@ void Mesh::Make_New_List_V2(float taille_radius, std::vector<int> TrianglesIndic
 	std::cout << "<                             >" << std::endl;
 	std::cout << "[Complete Data Interpolation Loaded]" << std::endl;
 
-	std::cout << "[Complete Data Interpolation Loading]" << std::endl;
+	std::cout << "[Complete Data Transfer Loading]" << std::endl;
 	std::cout << "<                             >" << std::endl;
 	CompleteTranferGruppe_V2(taille_radius);
 	std::cout << "<                             >" << std::endl;
-	std::cout << "[Complete Data Interpolation Loaded]" << std::endl;
+	std::cout << "[Complete Data Transfer Loaded]" << std::endl;
 
 }
+
 void Mesh::CompleteDataInterpolation_V2( float taille_radius) {
 	pair< pair<std::vector<glm::vec3>, std::vector<glm::uvec3>>, pair< std::vector<glm::vec3>, std::vector<glm::uvec3>>> TemporaireStockage;
-	TemporaireStockage.first.first = real_Macro_List_Vertex;
-	TemporaireStockage.first.second = real_Macro_List_Triangles;
-	TemporaireStockage.second.first = real_Micro_List_Vertex;
-	TemporaireStockage.second.second = real_Micro_List_Triangles;
+	
 
-	m_CompleteDataInterpolationTranfer.first.first = TemporaireStockage.first.first.size();
-	m_CompleteDataInterpolationTranfer.first.second = TemporaireStockage.first.first;
-	m_CompleteDataInterpolationTranfer.second.first = TemporaireStockage.first.second.size();
-	m_CompleteDataInterpolationTranfer.second.second = TemporaireStockage.first.second;
+	m_CompleteDataInterpolationTranfer.first.first = real_Macro_List_Vertex.size();
+	m_CompleteDataInterpolationTranfer.first.second = real_Macro_List_Vertex;
+	m_CompleteDataInterpolationTranfer.second.first = real_Macro_List_Triangles.size();
+	m_CompleteDataInterpolationTranfer.second.second = real_Macro_List_Triangles;
+
 	int size_old_d = m_CompleteDataInterpolationTranfer.first.second.size();
 
-	for (size_t i = 0; i < TemporaireStockage.second.first.size(); i++)
+	for (size_t i = 0; i < real_Micro_List_Vertex.size(); i++)
 	{
-		m_CompleteDataInterpolationTranfer.first.second.push_back(TemporaireStockage.second.first[i]);
+		m_CompleteDataInterpolationTranfer.first.second.push_back(real_Micro_List_Vertex[i]);
 	}
 	std::cout << "OldDEcim + OldVox : " << m_CompleteDataInterpolationTranfer.first.second.size() << std::endl;
 	int size_old_d_v = m_CompleteDataInterpolationTranfer.first.second.size();
 	glm::uvec3 indice_triangle_tmp;
-	for (size_t i = 0; i < TemporaireStockage.second.second.size(); i++)
+	for (size_t i = 0; i < real_Micro_List_Triangles.size(); i++)
 	{
-		indice_triangle_tmp = TemporaireStockage.second.second[i];
+		indice_triangle_tmp = real_Micro_List_Triangles[i];
 		indice_triangle_tmp += size_old_d;
 		m_CompleteDataInterpolationTranfer.second.second.push_back(indice_triangle_tmp);
 		if ((indice_triangle_tmp[0] > size_old_d_v) || (indice_triangle_tmp[1] > size_old_d_v) || (indice_triangle_tmp[2] > size_old_d_v)) {
@@ -1077,6 +1082,7 @@ void Mesh::CompleteDataInterpolation_V2( float taille_radius) {
 	std::cout << "OldDecim + OldVox + New Vox Triangle : " << m_CompleteDataInterpolationTranfer.second.second.size() << std::endl;
 	std::cout << "\n" << m_CompleteDataInterpolationTranfer.first.second.size();
 }
+
 void Mesh::CompleteTranferGruppe_V2(float taille_radius) {
 	pair< pair<std::vector<glm::vec3>, std::vector<glm::uvec3>>, pair< std::vector<glm::vec3>, std::vector<glm::uvec3>>> TemporaireStockage;
 	TemporaireStockage.first.first = real_Macro_List_Vertex;
@@ -1092,7 +1098,7 @@ void Mesh::CompleteTranferGruppe_V2(float taille_radius) {
 
 	for (size_t i = 0; i < vertex_transferGroupe.size(); i++)
 	{
-		//std::cout << "[" << i << "->" << meshPtr->vertex_transferGroupe[i] << "] " << std::flush;
+		
 		tmp_ = vertex_transferGroupe[i];
 		if (tmp_ != -1) {
 			cmp_++;
@@ -1143,9 +1149,7 @@ void Mesh::CompleteTranferGruppe_V2(float taille_radius) {
 		if (m_tranferGruppe[i] > -0.5f) {
 			m_vertexPositions_NEW[i] = m_DataStoreAfterVoxDec.first.second[m_tranferGruppe[i]];
 		}
-		else {
-			//meshPtr->m_vertexPositions_NEW[i] = glm::vec3(0, 0, 0);
-		}
+		
 	}
 	m_vPosition2 = m_vertexPositions_NEW;
 	TemporaireStockage.first.first.clear();
@@ -1153,5 +1157,5 @@ void Mesh::CompleteTranferGruppe_V2(float taille_radius) {
 	TemporaireStockage.second.first.clear();
 	TemporaireStockage.second.second.clear();
 }
-#pragma endregion
+
 	
